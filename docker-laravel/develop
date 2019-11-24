@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+ 
+# Exportar variables para poder utilizarlas con docker-compose
+export APP_PORT=${APP_PORT:-8080}
+export APP_ENV=${APP_ENV:-local}
+export DB_PORT=${DB_PORT:-33060}
+export DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
+export DB_NAME=${DB_NAME:-alzort}
+export DB_USER=${DB_USER:-alzort}
+export DB_PASSWORD=${DB_PASSWORD:-secret}
+ 
+COMPOSE="docker-compose"
+ 
+# Verificamos si estamos enviando argumentos
+if [ $# -gt 0 ]; then
+    # Ejecutar comandos de artisan
+    if [ "$1" == "art" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            php \
+            php artisan "$@"
+    # Ejecutar tareas de composer
+    elif [ "$1" == "composer" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            php \
+            composer "$@"
+    # Ejecutar pruebas de phpunit
+    elif [ "$1" == "test" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            php \
+            ./vendor/bin/phpunit "$@"
+    else
+        # Si los argumentos son diferentes se pasarán a docker-compose
+        $COMPOSE "$@"
+    fi
+else
+    # Si no se indica ningún parámetro se mostrarán los contenedores
+    docker-compose ps
+fi
+
