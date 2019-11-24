@@ -13,7 +13,7 @@ services:
       - alzort
   node:
     image: node:9.8
-    volume: .:/var/www/html
+    volumes: .:/var/www/html
     networks:
       - alzort
   mysql:
@@ -36,11 +36,12 @@ services:
       - redisdata:/data
     networks:
       - alzort
-  networks:
-    alzort:
-      driver: "bridge"
-  volumes:
-    redisdata:
-      driver: "local"
-    mysqldata:
-      driver: "local" 
+networks:
+  alzort:
+    driver: "bridge"
+    
+volumes:
+  redisdata:
+    driver: "local"
+  mysqldata:
+    driver: "local"
