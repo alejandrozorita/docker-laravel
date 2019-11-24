@@ -34,6 +34,27 @@ if [ $# -gt 0 ]; then
             -w /var/www/html \
             php \
             ./vendor/bin/phpunit "$@"
+    # Ejecutar tareas npm
+    elif [ "$1" == "npm" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            node \
+            npm "$@"
+    # Ejecutar tareas npm
+    elif [ "$1" == "gulp" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            node \
+            gulp "$@"
+    # Ejecutar tareas npm
+    elif [ "$1" == "yarn" ]; then
+        shift 1
+        $COMPOSE run --rm \
+            -w /var/www/html \
+            node \
+            yarn "$@"
     else
         # Si los argumentos son diferentes se pasarán a docker-compose
         $COMPOSE "$@"

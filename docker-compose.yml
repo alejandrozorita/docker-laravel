@@ -1,19 +1,19 @@
 version: '3'
 services:
-  nginx:
-    build: nginx
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    image: alzort/app
+    volumes:
+      - .:/var/www/html
     ports:
       - "${APP_PORT}:80"
-    volumes:
-      - ./application:/var/www/html
     networks:
       - alzort
-    environment:
-      APP_ENV: ${APP_ENV}
-  php:
-    build: php
-    volumes:
-      - ./application:/var/www/html
+  node:
+    image: node:9.8
+    volume: .:/var/www/html
     networks:
       - alzort
   mysql:
@@ -28,18 +28,19 @@ services:
     volumes:
       - mysqldata:/var/lib/mysql
     networks:
-      - alzort
+      - alzort 
+
   redis:
     image: redis:alpine
     volumes:
       - redisdata:/data
     networks:
       - alzort
-networks:
-  alzort:
-    driver: "bridge"
-volumes:
-  redisdata:
-    driver: "local"
-  mysqldata:
-    driver: "local"
+  networks:
+    alzort:
+      driver: "bridge"
+  volumes:
+    redisdata:
+      driver: "local"
+    mysqldata:
+      driver: "local" 
